@@ -74,3 +74,53 @@ openssl genrsa -out /etc/ssl/certs/root-ca.key 4096
 /usr/bin/openssl x509 -req -in /etc/ssl/certs/web.csr -CA /etc/ssl/certs/root-ca.crt -CAkey /etc/ssl/certs/root-ca.key -CAcreateserial -out /etc/ssl/certs/web.crt
 
 cat /etc/ssl/certs/root-ca.crt /etc/ssl/certs/web.crt > /etc/ssl/certs/chain.pem
+#
+echo "Creating nginx log dir:"
+mkdir -vp ${NGINX_LOG_DIR}
+echo "Creating nginx sites dir:"
+mkdir -vp $SCRPATH'sites-enabled'
+#---<START: nginx default sitetemplate>---
+echo "server {
+	listen 443 ssl default_server;
+	# listen [::]:443 ssl default_server;
+
+	#root /var/www/html;
+
+	# Add index.php to the list if you are using PHP
+	#index index.html index.htm index.nginx-debian.html;
+
+	server_name _;
+	ssl_certificate /etc/nginx/certs/chain.pem;
+	ssl_certificate_key /etc/nginx/certs/root-ca.key;
+
+	location / {
+		proxy_set_header HOST \$host;
+		proxy_set_header X-Forwarded-Proto \$scheme;
+		proxy_set_header X-Real-IP \$remote_addr;
+		proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+		proxy_pass http://apache:80\$request_uri;
+	}
+
+}" > $SCRPATH'sites-enabled/default'
+#---<END: nginx default sitetemplate>---
+#
+#---<START: Docker compose template>---
+echo "version: '2'
+services:
+	nginx:
+		image: ${NGINX_IMAGE}
+		hostname: nginx
+		volumes:
+			- .sites-enabled:/etc/nginx/sites-enabled
+			- /etc/ssl/certs:/etc/nginx/certs
+			- ${NGINX_LOG_DIR}:/var/log/nginx
+		ports:
+			- "${NGINX_PORT}:443"
+	apache:
+		image: ${APACHE_IMAGE}
+		hostname: apache
+		ports:
+			- "80:80" " > $SCRPATH'docker-compose.yml'
+#---<END: Docker compose template>---
+echo "Deploying containers..."
+docker-compose up -d
