@@ -107,20 +107,20 @@ echo "server {
 #---<START: Docker compose template>---
 echo "version: '2'
 services:
-	nginx:
-		image: ${NGINX_IMAGE}
-		hostname: nginx
-		volumes:
-			- .sites-enabled:/etc/nginx/sites-enabled
-			- /etc/ssl/certs:/etc/nginx/certs
-			- ${NGINX_LOG_DIR}:/var/log/nginx
-		ports:
-			- "${NGINX_PORT}:443"
-	apache:
-		image: ${APACHE_IMAGE}
-		hostname: apache
-		ports:
-			- "80:80" " > $SCRPATH'docker-compose.yml'
+  nginx:
+    image: ${NGINX_IMAGE}
+    hostname: nginx
+    volumes:
+      - .sites-enabled:/etc/nginx/sites-enabled
+      - /etc/ssl/certs:/etc/nginx/certs
+      - ${NGINX_LOG_DIR}:/var/log/nginx
+  ports:
+      - "${NGINX_PORT}:443"
+  apache:
+    image: ${APACHE_IMAGE}
+    hostname: apache
+    ports:
+      - "80:80" " > $SCRPATH'docker-compose.yml'
 #---<END: Docker compose template>---
 echo "Deploying containers..."
 docker-compose up -d
