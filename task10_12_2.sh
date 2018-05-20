@@ -164,7 +164,7 @@ services:
       - .etc:/etc/nginx
       - .certs:/etc/nginx/certs
       - ${NGINX_LOG_DIR}:/var/log/nginx
-  ports:
+    ports:
       - "${NGINX_PORT}:443"
   apache:
     image: ${APACHE_IMAGE}
