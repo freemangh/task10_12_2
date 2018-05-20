@@ -76,8 +76,8 @@ openssl genrsa -out $SCRPATH'certs/root.key' 4096
 cat $SCRPATH'certs/root.crt' $SCRPATH'certs/web.crt' > $SCRPATH'certs/chain.pem'
 #
 echo "Creating nginx log dir:"
-mkdir -vp ${NGINX_LOG_DIR}
-echo "Creating nginx sites dir:"
+mkdir -vp $NGINX_LOG_DIR
+echo "Creating nginx conf dir:"
 mkdir -vp $SCRPATH'etc'
 #---<START: nginx default sitetemplate>---
 echo "user www-data;
