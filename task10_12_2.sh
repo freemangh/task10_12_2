@@ -61,16 +61,16 @@ L = Kharkov
 O = Mirantis
 OU=Internship
 emailAddress = khvastunov@gmail.com
-CN = vm1
+CN = $HOST_NAME
 
 [ san ]
-subjectAltName = \"DNS:vm1,IP:$NGINX_IP\"
-" > /etc/ssl/vm1.cnf
+subjectAltName = \"DNS:$HOST_NAME,IP:$EXTERNAL_IP\"
+" > /etc/ssl/docker.cnf
 
 openssl genrsa -out /etc/ssl/certs/root-ca.key 4096
-/usr/bin/openssl req -x509 -new -nodes -key /etc/ssl/certs/root-ca.key -sha256 -days 365 -out /etc/ssl/certs/root-ca.crt -subj "/C=UA/ST=Kharkov/L=Kharkov/O=Mirantis/OU=Internship/CN=vm1/" -reqexts san -extensions san -config /etc/ssl/vm1.cnf
+/usr/bin/openssl req -x509 -new -nodes -key /etc/ssl/certs/root-ca.key -sha256 -days 365 -out /etc/ssl/certs/root-ca.crt -subj "/C=UA/ST=Kharkov/L=Kharkov/O=Mirantis/OU=Internship/CN=$HOST_NAME/" -reqexts san -extensions san -config /etc/ssl/docker.cnf
 /usr/bin/openssl genrsa -out /etc/ssl/certs/web.key 2048
-/usr/bin/openssl req -new -out /etc/ssl/certs/web.csr -key /etc/ssl/certs/web.key -subj "/C=UA/ST=Kharkov/L=Kharkov/O=Mirantis/OU=Internship/CN=vm1/" -reqexts san -extensions san -config /etc/ssl/vm1.cnf
+/usr/bin/openssl req -new -out /etc/ssl/certs/web.csr -key /etc/ssl/certs/web.key -subj "/C=UA/ST=Kharkov/L=Kharkov/O=Mirantis/OU=Internship/CN=$HOST_NAME/" -reqexts san -extensions san -config /etc/ssl/docker.cnf
 /usr/bin/openssl x509 -req -in /etc/ssl/certs/web.csr -CA /etc/ssl/certs/root-ca.crt -CAkey /etc/ssl/certs/root-ca.key -CAcreateserial -out /etc/ssl/certs/web.crt
 
 cat /etc/ssl/certs/root-ca.crt /etc/ssl/certs/web.crt > /etc/ssl/certs/chain.pem
