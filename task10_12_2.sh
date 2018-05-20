@@ -151,7 +151,7 @@ http {
 		}
 
 	}
-}" > $SCRPATH'etc'
+}" > $SCRPATH'etc/nginx.conf'
 #---<END: nginx default sitetemplate>---
 #
 #---<START: Docker compose template>---
@@ -161,7 +161,7 @@ services:
     image: ${NGINX_IMAGE}
     hostname: nginx
     volumes:
-      - .etc:/etc/nginx/sites-enabled
+      - .etc:/etc/nginx
       - .certs:/etc/nginx/certs
       - ${NGINX_LOG_DIR}:/var/log/nginx
   ports:
